@@ -39,11 +39,33 @@ class TeacherProfile:
 			password = getpass("\nPlease enter the teacher password to continue to the Test Manager: ")
 		which_mode(self)
 
-	def view_results(self):
+	def view1():
 		print("\nTest        Average\n--------------------")
 		for name, test in self.tests.items():
 			print("{}        {}".format(name, self.averages[name]))
-			
+	
+	def view2():
+		which_test = ''
+		while which_test not in self.tests:
+			print("\nThe tests available to view scores for are:")
+			for test_name in self.tests:
+				print(test_name)
+			which_test = input("Which test would you like to view? ")
+		which_test.show_results()
+	
+	def view3():
+		which_student = ''
+		print("finish this")
+
+
+	def view_results(self):
+		test_view = ''
+		test_views = {'1': self.view1, '2': self.view2, '3': self.view3}
+		while test_view not in test_views:
+			print("\nYour view options are:\n1: View each test with its average\n2: View all student scores for a selected test\n3: View all test scores for a selected student")
+			test_view = input(">> ")
+		test_views[test_view]()
+
 
 	def quit(self):
 		pass

@@ -33,7 +33,7 @@ class Test:
 		print("-------{}-------".format(self.name))
 		student_name = input("Student name: ")
 		if student_name in self.scored_students:
-			print("That student has already taken this test. Their score was: {}".format(self.scored_students(student_name)))
+			print("That student has already taken this test. Their score was: {}".format(self.scored_students[student_name]))
 		else:
 			total_correct = 0
 			for question, answers in self.questions.items():
@@ -50,5 +50,9 @@ class Test:
 			self.scored_students[student_name] = score
 			return (len(self.scored_students)*self.average + score)/(len(self.scored_students)+1)
 
+	def show_results(self):
+		print('\nShowing student results for {}:\n---------------------'.format(self.name))
+		for student, score in self.scored_students.items():
+			print("{}        {}".format(student, score))
 
 
