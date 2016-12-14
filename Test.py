@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 
 from collections import OrderedDict
 
@@ -12,23 +13,27 @@ class Test:
 		self.questions = OrderedDict()
 		self.answer_choices = answer_choices[:choices]
 		self.scored_students = {}
+		self.average = 0
 
 	def add_question(self):
-		new_question = input('\nPlease type the next question: ')
+		new_question = input('\nType the next question: ')
 		answers = []
 		for i in range(self.choices):
-			next_answer = input("Please enter the answer choice {}: ".format(self.answer_choices[i]))
+			next_answer = input("Enter the answer choice {}: ".format(self.answer_choices[i]))
 			answers.append(next_answer)
 		correct = ''
 		while correct not in answer_choices:
-			correct = input("Please enter the letter of the correct answer choice: ").upper()
+			correct = input("Enter the letter of the correct answer choice: ").upper()
 		answers.append(correct)
 		self.questions[new_question] = answers
 
 	def administer(self):
-		student_name = input("Please enter the student's name: ")
+		clear = lambda:os.system('tput reset')
+		clear()
+		print("-------{}-------".format(self.name))
+		student_name = input("Student name: ")
 		if student_name in self.scored_students:
-			print("That student has already taken this test. Their score was: {}".format(scored_students(student_name)))
+			print("That student has already taken this test. Their score was: {}".format(self.scored_students(student_name)))
 		else:
 			total_correct = 0
 			for question, answers in self.questions.items():
@@ -37,12 +42,13 @@ class Test:
 					print("{}: {}".format(answer_choices[answers.index(choice)], choice))
 				answer = ''
 				while answer not in self.answer_choices:
-					answer = input("Please enter the letter of your answer choice: ").upper()
+					answer = input("Your answer choice: ").upper()
 				if answer == answers[self.choices]:
 					total_correct += 1
 			score = total_correct / len(self.questions) * 100
 			print("\nThat's the end of the test! Your score was {}%".format(score))
 			self.scored_students[student_name] = score
+			return (len(self.scored_students)*self.average + score)/(len(self.scored_students)+1)
 
 
 

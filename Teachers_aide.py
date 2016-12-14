@@ -10,9 +10,10 @@ class TeacherProfile:
 		self.profile_name = profile_name
 		self.password = password 
 		self.tests = {}
+		self.averages = {}
 
 	def create_test(self):
-		name = input("Please give this test a name: ")
+		name = input("\nNew Test\n------------------\nPlease give this test a name: ")
 		choices = 0
 		while choices not in range(2, 11):
 			choices = int(input("How many multiple choice answers would you like each question to have? Please stay between 2 and 10: "))
@@ -21,26 +22,31 @@ class TeacherProfile:
 		for i in range(number_questions):
 			new_test.add_question()
 		self.tests[name] = new_test
+		self.averages[name] = new_test.average
+		print("\n----Test created: saved as '{}'----".format(name))
+		which_mode(self)
 
 	def administer_test(self):
 		test_name = ''
 		password = ''
 		while test_name not in self.tests:
-			print("Your current saved tests are: ")
+			print("\nYour current saved tests are: ")
 			for test in self.tests:
 				print(test)
-			test_name = input("Which test would you like to administer? ")
-		self.tests[test_name].administer()
+			test_name = input("\nWhich test would you like to administer? ")
+		self.averages[test_name] = self.tests[test_name].administer()
 		while password != self.password:
 			password = getpass("\nPlease enter the teacher password to continue to the Test Manager: ")
+		which_mode(self)
 
-		def view_results(self):
-			for name, test in self.tests.items():
-				#Ugh! This is boring.
-				for student in test.scored_students:
-					print()
+	def view_results(self):
+		print("\nTest        Average\n--------------------")
+		for name, test in self.tests.items():
+			print("{}        {}".format(name, self.averages[name]))
+			
 
-		def quit(self):
+	def quit(self):
+		pass
 
 
 
@@ -55,19 +61,22 @@ def load_teacher_profile():
 		if yes_or_no.lower()[0] == 'y':
 			password = getpass("Please enter your desired password: ")
 			current_profile = TeacherProfile(profile_name, password)
+		else:
+			load_teacher_profile()
 	return current_profile
 
 def which_mode(current_profile):
 	mode = ''
 	modes = {'1': current_profile.create_test, '2': current_profile.administer_test, '3': current_profile.view_results, 'q': current_profile.quit}
 	while mode not in modes:
-		mode = input("There are three possible modes in this Test Manager: \n1: To create a test, type '1'\n2: To administer a test, type '2'\n3: To view the results of a test, type '3'\nTo quit the Test Manager, type 'q'\n>>")
-	current_profile.modes[mode]
+		mode = input("\n------------------\n1: To create a test, type '1'\n2: To administer a test, type '2'\n3: To view the results of a test, type '3'\nTo quit the Test Manager, type 'q'\n>>")
+	modes[mode]()
 
 
 
 
 if __name__ == '__main__':
 	current_profile = load_teacher_profile()
+	which_mode(current_profile)
 	
 
