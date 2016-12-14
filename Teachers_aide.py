@@ -20,10 +20,19 @@ class Test:
 		self.questions[new_question] = answers
 
 	def administer_test(self):
+		total_correct = 0
 		for question, answers in self.questions.items():
 			print(question)
-			for answer in answers[0, len(answers) - 2]:
-				print("{}: {}}".format(answer_choices)
+			for choice in answers[:len(answers) - 1]:
+				print("{}: {}".format(answer_choices[answers.index(choice)], choice))
+			answer = ''
+			while answer not in self.answer_choices:
+				answer = input("Please enter the letter of your answer choice: ").upper()
+			if answer == answers[self.choices]:
+				total_correct += 1
+		score = total_correct / len(self.questions)
+		print(score)
+
 
 
 def create_test():
@@ -37,5 +46,7 @@ def create_test():
 		new_test.add_question()
 	return new_test
 
-create_test()
+if __name__ == '__main__':
+	my_test = create_test()
+	my_test.administer_test()
 
