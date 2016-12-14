@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 answer_choices = ['A', "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
 class Test:
@@ -38,8 +40,8 @@ class Test:
 def create_test():
 	name = input("Please give this test a name: ")
 	choices = 0
-	while choices not in range(1, 11):
-		choices = int(input("How many multiple choice answers would you like each question to have? Please stay between 1 and 10: "))
+	while choices not in range(2, 11):
+		choices = int(input("How many multiple choice answers would you like each question to have? Please stay between 2 and 10: "))
 	new_test = Test(name, choices)
 	number_questions = int(input("How many questions would you like to put on your test? "))
 	for i in range(number_questions):
