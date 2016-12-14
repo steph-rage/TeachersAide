@@ -1,54 +1,73 @@
 #!/usr/bin/python3
+import pickle
 
-answer_choices = ['A', "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+from getpass import getpass
+from Test import Test
 
-class Test:
-	def __init__(self, name, choices):
-		self.name = name
-		self.choices = choices
-		self.questions = {}
-		self.answer_choices = answer_choices[:choices]
 
-	def add_question(self):
-		new_question = input('Please type the next question: ')
-		answers = []
-		for i in range(self.choices):
-			next_answer = input("Please enter the answer choice {}: ".format(self.answer_choices[i]))
-			answers.append(next_answer)
-		correct = ''
-		while correct not in answer_choices:
-			correct = input("Please enter the letter of the correct answer choice: ").upper()
-		answers.append(correct)
-		self.questions[new_question] = answers
+class TeacherProfile:
+	def __init__(self, profile_name, password):
+		self.profile_name = profile_name
+		self.password = password 
+		self.tests = {}
+
+	def create_test(self):
+		name = input("Please give this test a name: ")
+		choices = 0
+		while choices not in range(2, 11):
+			choices = int(input("How many multiple choice answers would you like each question to have? Please stay between 2 and 10: "))
+		new_test = Test(name, choices)
+		number_questions = int(input("How many questions would you like to put on your test? "))
+		for i in range(number_questions):
+			new_test.add_question()
+		self.tests[name] = new_test
 
 	def administer_test(self):
-		total_correct = 0
-		for question, answers in self.questions.items():
-			print(question)
-			for choice in answers[:len(answers) - 1]:
-				print("{}: {}".format(answer_choices[answers.index(choice)], choice))
-			answer = ''
-			while answer not in self.answer_choices:
-				answer = input("Please enter the letter of your answer choice: ").upper()
-			if answer == answers[self.choices]:
-				total_correct += 1
-		score = total_correct / len(self.questions)
-		print(score)
+		test_name = ''
+		password = ''
+		while test_name not in self.tests:
+			print("Your current saved tests are: ")
+			for test in self.tests:
+				print(test)
+			test_name = input("Which test would you like to administer? ")
+		self.tests[test_name].administer()
+		while password != self.password:
+			password = getpass("\nPlease enter the teacher password to continue to the Test Manager: ")
+
+		def view_results(self):
+			for name, test in self.tests.items():
+				#Ugh! This is boring.
+				for student in test.scored_students:
+					print()
+
+		def quit(self):
 
 
 
-def create_test():
-	name = input("Please give this test a name: ")
-	choices = 0
-	while choices not in range(2, 11):
-		choices = int(input("How many multiple choice answers would you like each question to have? Please stay between 2 and 10: "))
-	new_test = Test(name, choices)
-	number_questions = int(input("How many questions would you like to put on your test? "))
-	for i in range(number_questions):
-		new_test.add_question()
-	return new_test
+
+
+def load_teacher_profile():
+	profile_name = input("Please enter your teacher profile name: ")
+	try:
+		current_profile = pickle.load(open(profile_name, "rb"))
+	except FileNotFoundError:
+		yes_or_no = input("No teacher profile by that name exists. Would you like to create a new profile? ")
+		if yes_or_no.lower()[0] == 'y':
+			password = getpass("Please enter your desired password: ")
+			current_profile = TeacherProfile(profile_name, password)
+	return current_profile
+
+def which_mode(current_profile):
+	mode = ''
+	modes = {'1': current_profile.create_test, '2': current_profile.administer_test, '3': current_profile.view_results, 'q': current_profile.quit}
+	while mode not in modes:
+		mode = input("There are three possible modes in this Test Manager: \n1: To create a test, type '1'\n2: To administer a test, type '2'\n3: To view the results of a test, type '3'\nTo quit the Test Manager, type 'q'\n>>")
+	current_profile.modes[mode]
+
+
+
 
 if __name__ == '__main__':
-	my_test = create_test()
-	my_test.administer_test()
+	current_profile = load_teacher_profile()
+	
 
