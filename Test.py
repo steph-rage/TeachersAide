@@ -3,9 +3,14 @@ import os
 
 from collections import OrderedDict
 
+
+#Possible answer choices for students: reasonable assumption made that teachers 
+#will not want to have more than 10 answer choices per question
 answer_choices = ['A', "B", "C", "D", "E", "F", "G", "H", "I", "J"]
 
 
+#Used from within Teachers_aide any time a teacher wants to create a new test
+#or interact with an existing test
 class Test:
 	def __init__(self, name, choices):
 		self.name = name
@@ -28,8 +33,10 @@ class Test:
 		self.questions[new_question] = answers
 
 	def administer(self):
+		#Clear the terminal so that a student cannot scroll backwards and see test answers
 		clear = lambda:os.system('tput reset')
 		clear()
+
 		print("-------{}-------".format(self.name))
 		student_name = input("Student name: ")
 		if student_name in self.scored_students:
@@ -43,16 +50,25 @@ class Test:
 				answer = ''
 				while answer not in self.answer_choices:
 					answer = input("Your answer choice: ").upper()
+				print(answer)
 				if answer == answers[self.choices]:
 					total_correct += 1
-			score = total_correct / len(self.questions) * 100
+			score = round(total_correct / len(self.questions) * 100, 2)
+			#Give student their score immediately
 			print("\nThat's the end of the test! Your score was {}%".format(score))
+
+			#Add the student and their score to the list of students who have taken the test
 			self.scored_students[student_name] = score
-			return (len(self.scored_students)*self.average + score)/(len(self.scored_students)+1)
+
+			#And return a new average for all students who have taken the test
+			self.average = round(((len(self.scored_students)-1)*self.average + score)/len(self.scored_students), 2)
+			return [student_name, self.average]
 
 	def show_results(self):
 		print('\nShowing student results for {}:\n---------------------'.format(self.name))
 		for student, score in self.scored_students.items():
-			print("{}        {}".format(student, score))
+			print("{}        {}%".format(student, score))
+		print("------------\nAverage = {}%".format(self.average))
+
 
 
