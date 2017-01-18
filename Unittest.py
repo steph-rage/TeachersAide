@@ -26,13 +26,18 @@ class TestMethodTests(unittest.TestCase):
 			test_test = create_test()
 		self.assertEqual(actual_questions, test_test.questions)
 
-#This seems dumb: I'm just going to be writing the same code over again...
-	'''def test_administer_test(self):
+
+	def administer_fake_test(self):
 		questions = self.create_fake_test()[1]
 		student_answers = []
 		for _ in len(questions):
-			student_answers += answer_choices[randint]'''
+			student_answers += answer_choices[randint]
 
+
+#class TestStudentScoring(unittest.TestCase):
+
+#	def administer_fake_test(self):
+		
 
 if __name__ == '__main__':
     unittest.main()
